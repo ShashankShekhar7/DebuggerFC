@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Science Quiz Game</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        #quiz-container {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            max-width: 600px;
+            width: 90%;
+        }
+        h1 {
+            text-align: center;
+            color: #4a4a4a;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        #question {
+            font-size: 1.2em;
+            margin-bottom: 25px;
+            color: #333;
+            line-height: 1.6;
+        }
+        #options {
+            display: grid;
+            gap: 15px;
+        }
+        button {
+            padding: 12px;
+            font-size: 1em;
+            background-color: #6c5ce7;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        button:hover {
+            background-color: #5c4ccc;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+        }
+        button:disabled {
+            background-color: #b3b3b3;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        #result {
+            margin-top: 25px;
+            font-weight: bold;
+            text-align: center;
+            font-size: 1.1em;
+            color: #2d3436;
+        }
+        #score {
+            text-align: right;
+            margin-top: 15px;
+            font-size: 1.1em;
+            color: #6c5ce7;
+        }
+        #next-btn {
+            display: block;
+            margin: 20px auto 0;
+            background-color: #00b894;
+        }
+        #next-btn:hover {
+            background-color: #00a885;
+        }
+    </style>
+</head>
+<body>
+    <div id="quiz-container">
+        <h1>Advanced Science Quiz</h1>
+        <div id="question"></div>
+        <div id="options"></div>
+        <div id="result"></div>
+        <div id="score">Score: <span id="score-value">0</span></div>
+        <button id="next-btn" style="display:none;">Next Question</button>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "What is the half-life of Carbon-14?",
+                options: ["3,800 years", "5,730 years", "7,500 years", "10,000 years"],
+                correctAnswer: "5,730 years"
+            },
+            {
+                question: "Which of the following is NOT a type of neutrino?",
+                options: ["Electron neutrino", "Muon neutrino", "Tau neutrino", "Photon neutrino"],
+                correctAnswer: "Photon neutrino"
+            },
+            {
+                question: "What is the primary function of the Golgi apparatus in a cell?",
+                options: ["Energy production", "Protein synthesis", "Lipid breakdown", "Protein modification and packaging"],
+                correctAnswer: "Protein modification and packaging"
+            },
+            {
+                question: "Which of these is NOT a fundamental force of nature?",
+                options: ["Strong nuclear force", "Weak nuclear force", "Electromagnetic force", "Centrifugal force"],
+                correctAnswer: "Centrifugal force"
+            },
+            {
+                question: "What is the pH of a 0.1 M HCl solution?",
+                options: ["1", "2", "3", "4"],
+                correctAnswer: "1"
+            },
+            {
+                question: "Which of the following elements has the highest electronegativity?",
+                options: ["Oxygen", "Nitrogen", "Fluorine", "Chlorine"],
+                correctAnswer: "Fluorine"
+            },
+            {
+                question: "What is the process by which a solid changes directly into a gas without passing through the liquid state?",
+                options: ["Sublimation", "Deposition", "Evaporation", "Condensation"],
+                correctAnswer: "Sublimation"
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let shuffledQuestions = [];
+
+        const questionEl = document.getElementById('question');
+        const optionsEl = document.getElementById('options');
+        const resultEl = document.getElementById('result');
+        const scoreEl = document.getElementById('score-value');
+        const nextBtn = document.getElementById('next-btn');
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function startQuiz() {
+            shuffledQuestions = [...questions];
+            shuffleArray(shuffledQuestions);
+            currentQuestion = 0;
+            score = 0;
+            showQuestion();
+        }
+
+        function showQuestion() {
+            resultEl.textContent = '';
+            nextBtn.style.display = 'none';
+            
+            if (currentQuestion < shuffledQuestions.length) {
+                const question = shuffledQuestions[currentQuestion];
+                questionEl.textContent = question.question;
+                optionsEl.innerHTML = '';
+                
+                question.options.forEach(option => {
+                    const button = document.createElement('button');
+                    button.textContent = option;
+                    button.addEventListener('click', () => selectAnswer(option));
+                    optionsEl.appendChild(button);
+                });
+            } else {
+                showResult();
+            }
+        }
+
+        function selectAnswer(selected) {
+            const question = shuffledQuestions[currentQuestion];
+            const buttons = optionsEl.getElementsByTagName('button');
+            
+            for (let button of buttons) {
+                button.disabled = true;
+                if (button.textContent === question.correctAnswer) {
+                    button.style.backgroundColor = '#00b894';
+                } else if (button.textContent === selected) {
+                    button.style.backgroundColor = '#d63031';
+                }
+            }
+
+            if (selected === question.correctAnswer) {
+                score++;
+                resultEl.textContent = 'Correct!';
+                resultEl.style.color = '#00b894';
+            } else {
+                resultEl.textContent = 'Incorrect. The correct answer is ' + question.correctAnswer;
+                resultEl.style.color = '#d63031';
+            }
+
+            scoreEl.textContent = score;
+            nextBtn.style.display = 'block';
+        }
+
+        function showResult() {
+            questionEl.textContent = 'Quiz Completed!';
+            optionsEl.innerHTML = '';
+            resultEl.textContent = `Your final score is ${score} out of ${shuffledQuestions.length}`;
+            resultEl.style.color = '#2d3436';
+            nextBtn.textContent = 'Restart Quiz';
+            nextBtn.style.display = 'block';
+        }
+
+        nextBtn.addEventListener('click', () => {
+            if (currentQuestion < shuffledQuestions.length) {
+                currentQuestion++;
+                showQuestion();
+            } else {
+                startQuiz();
+            }
+        });
+
+        startQuiz();
+    </script>
+</body>
+</html>

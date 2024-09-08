@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Quiz Card</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: background 0.5s ease;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            padding: 30px;
+            width: 340px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+        }
+
+        .question {
+            font-size: 22px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+        .answer {
+            font-size: 18px;
+            color: #4CAF50;
+            margin-bottom: 15px;
+            font-weight: 400;
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.5s ease;
+        }
+
+        .answer.show {
+            opacity: 1;
+            max-height: 100px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="card" id="quiz-card">
+        <!-- Questions and answers will be added dynamically here -->
+    </div>
+
+    <script>
+        const quizCards = [
+    { question: "What is the capital of France?", answer: "Paris" },
+    { question: "Which planet is known as the Red Planet?", answer: "Mars" },
+    { question: "What is the largest mammal in the world?", answer: "Blue Whale" },
+    { question: "Who painted the Mona Lisa?", answer: "Leonardo da Vinci" },
+    { question: "What is the chemical symbol for gold?", answer: "Au" },
+    { question: "What is the hardest natural substance on Earth?", answer: "Diamond" },
+    { question: "What is the smallest prime number?", answer: "2" },
+    { question: "Who wrote the play 'Romeo and Juliet'?", answer: "William Shakespeare" },
+    { question: "What gas do plants absorb from the atmosphere for photosynthesis?", answer: "Carbon dioxide" },
+    { question: "What is the capital city of Japan?", answer: "Tokyo" },
+    { question: "What element does 'O' represent on the periodic table?", answer: "Oxygen" },
+    { question: "What is the largest planet in our solar system?", answer: "Jupiter" },
+    { question: "How many continents are there on Earth?", answer: "Seven" },
+    { question: "What is the main ingredient in guacamole?", answer: "Avocado" },
+    { question: "Who was the first person to walk on the moon?", answer: "Neil Armstrong" }
+];
+
+
+        function loadRandomCards() {
+            const cardContainer = document.getElementById("quiz-card");
+            cardContainer.innerHTML = '';
+
+            // Shuffle and select 3 unique random cards
+            const shuffledCards = quizCards.sort(() => 0.5 - Math.random()).slice(0, 3);
+
+            shuffledCards.forEach((card, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question';
+                questionDiv.textContent = `Q${index + 1}: ${card.question}`;
+
+                const answerDiv = document.createElement('div');
+                answerDiv.className = 'answer';
+                answerDiv.textContent = card.answer;
+
+                const showAnswerButton = document.createElement('button');
+                showAnswerButton.textContent = 'Show Answer';
+                showAnswerButton.onclick = () => {
+                    answerDiv.classList.toggle('show');
+                };
+
+                const cardElement = document.createElement('div');
+                cardElement.appendChild(questionDiv);
+                cardElement.appendChild(answerDiv);
+                cardElement.appendChild(showAnswerButton);
+                cardContainer.appendChild(cardElement);
+            });
+        }
+
+        function changeBackground() {
+            const hue1 = Math.floor(Math.random() * 360);
+            const hue2 = (hue1 + 40) % 360;
+            document.body.style.background = `linear-gradient(135deg, hsl(${hue1}, 70%, 60%) 0%, hsl(${hue2}, 70%, 60%) 100%)`;
+        }
+
+        window.onload = function() {
+            loadRandomCards();
+            changeBackground();
+        };
+    </script>
+</body>
+</html>
